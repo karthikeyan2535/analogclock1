@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analog Clock</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #353535; /* Dark gray background */
+            font-family: Arial, sans-serif;
+            color: white; /* Text color */
+        }
+
+        #clock-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        #clock {
+            width: 300px;
+            height: 300px;
+            border: 1px solid black;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        #clock-name {
+            text-align: center;
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        #current-time {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="clock-container">
+        <div id="clock"></div>
+        <div id="clock-name">My Analog Clock</div>
+    </div>
+    <div id="current-time"></div>
+
+    <script>
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.id = 'clock-face';
+        canvas.width = 300;
+        canvas.height = 300;
+        document.getElementById('clock').appendChild(canvas);
+
+        ctx.beginPath();
+        ctx.arc(150, 150, 140, 0, 2 * Math.PI);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = '#000';
+        ctx.stroke();
+
+        function drawHourHand() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+
+            const hourAngle = (hour % 12) * (Math.PI / 6) + (minute / 60) * (Math.PI / 30);
+
+            ctx.beginPath();
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = '#f00';
+            ctx.moveTo(150, 150);
+            ctx.lineTo(
+                150 + 80 * Math.sin(hourAngle),
+                150 - 80 * Math.cos(hourAngle)
+            );
+            ctx.stroke();
+        }
+
+        drawHourHand();
+
+        function drawMinuteHand() {
+            const now = new Date();
+            const minute = now.getMinutes();
+            const second = now.getSeconds();
+
+            const minuteAngle = minute * (Math.PI / 30) + (second / 60) * (Math.PI / 30);
+
+            ctx.beginPath();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#00f';
+            ctx.moveTo(150, 150);
+            ctx.lineTo(
+                150 + 100 * Math.sin(minuteAngle),
+                150 - 100 * Math.cos(minuteAngle)
+            );
+            ctx.stroke();
+        }
+
+        drawMinuteHand();
+
+        function drawSecondHand() {
+            const now = new Date();
+            const second = now.getSeconds();
+
+            const secondAngle = second * (Math.PI / 30);
+
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#0f0';
+            ctx.moveTo(150, 150);
+            ctx.lineTo(
+                150 + 110 * Math.sin(secondAngle),
+                150 - 110 * Math.cos(secondAngle)
+            );
+            ctx.stroke();
+        }
+
+        drawSecondHand();
+
+        setInterval(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(150, 150, 140, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = '#000';
+            ctx.stroke();
+            drawHourHand();
+            drawMinuteHand();
+            drawSecondHand();
+
+            // Display current time
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('current-time').textContent = `Current Time: ${hours}:${minutes}:${seconds}`;
+        }, 1000);
+    </script>
+</body>
+</html>
